@@ -6,9 +6,10 @@
             /* put your css styles here...*/
            .square
            {
-               height: 100px;
+               height: 200;
                background-color: black;
-               padding: 10px;
+               /*padding: 10px;*/
+               
            }
            .flipped
            {
@@ -26,9 +27,7 @@
         
         <div class="container">
             
-            <div id='map' class='row'>
-                
-            </div>
+            <div id='map' class='row'></div>
         </div>
 
         
@@ -38,6 +37,23 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>        
         
         <!--put your modal dialogs here...-->
+       <div id="confirm" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-light">
+                        <h5 class="modal-title">Winner!</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Would you like to play again?</p>
+                    </div>
+                    <div class="modal-footer bg-dark">
+                        <button id="stop" type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                        <button id="reload" type="button" class="btn btn-primary">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         
         <script>
         /* global $ */
@@ -49,7 +65,7 @@
             function initializeModel()
             {
                 model.map = [];
-                model.boxes = 4;
+                model.boxes = 6;
                for(let i = 0; i < model.boxes; i++)
                {
                    model.map.push({flipped : false, prize: false})
@@ -57,6 +73,8 @@
                 
                 model.map[Math.floor(Math.random() * model.boxes)].prize = true;
                 model.count = 0;
+                
+                model.play = true;
             }
             
             
@@ -64,16 +82,39 @@
             $(document).on("click",".square",function()
             {
                 let i = $(this).attr("id");
-                if(model.map[i].flipped ==false)
+                if(model.play == true)
                 {
-                    model.map[i].flipped = true;
-                    if(model.map[i].prize == true)
+                    if(model.map[i].flipped ==false)
                     {
-                        model.map[i].prize=true;
+                        model.map[i].flipped = true;
+                        model.count++;
+                        
+                        if(model.map[i].prize == true)
+                        {
+                            model.count++;
+                            model.map[i].prize=true;
+                            model.play = false;
+                            $('#confirm').modal('show');
+                        }
                     }
                 }
-                
                 updateView();
+            });
+            
+            $("stop").click(function()
+            {
+                $('#confirm').modal('hide');
+            });
+            
+            $("reload").click(function()
+            {
+                $('#confirm').modal('hide');
+                $('#confirm').on('hide',function()
+                {
+                    window.location.reload();
+                    initializeModel();
+                    updateView();
+                });
             });
             
             //view
@@ -82,7 +123,7 @@
                 $('#map').empty();
                 for(var i = 0; i < model.boxes; i++)
                 {
-                    let s = $("<div class = 'col-4 square'></div>");
+                    let s = $("<div class = 'col-6 square'></div>");
                     s.attr('id', i);
                     if(model.map[i].flipped == true && model.map[i].prize == true)
                     {
