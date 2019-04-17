@@ -1,0 +1,106 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">        
+        
+        <style>
+            /* put your css styles here...*/
+           .square
+           {
+               height: 100px;
+               background-color: black;
+               padding: 10px;
+           }
+           .flipped
+           {
+               background-color:red;
+           }
+           .prize
+           {
+               background-color:green;
+           }
+           
+        </style>
+    </head>
+    
+    <body>
+        
+        <div class="container">
+            
+            <div id='map' class='row'>
+                
+            </div>
+        </div>
+
+        
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>        
+        
+        <!--put your modal dialogs here...-->
+        
+        <script>
+        /* global $ */
+        // put your JavaScript code here...
+        $(document).ready(function() 
+        {
+            let model = {};
+            
+            function initializeModel()
+            {
+                model.map = [];
+                model.boxes = 4;
+               for(let i = 0; i < model.boxes; i++)
+               {
+                   model.map.push({flipped : false, prize: false})
+               }
+                
+                model.map[Math.floor(Math.random() * model.boxes)].prize = true;
+                model.count = 0;
+            }
+            
+            
+            //controller
+            $(document).on("click",".square",function()
+            {
+                let i = $(this).attr("id");
+                if(model.map[i].flipped ==false)
+                {
+                    model.map[i].flipped = true;
+                    if(model.map[i].prize == true)
+                    {
+                        model.map[i].prize=true;
+                    }
+                }
+                
+                updateView();
+            });
+            
+            //view
+            function updateView()
+            {
+                $('#map').empty();
+                for(var i = 0; i < model.boxes; i++)
+                {
+                    let s = $("<div class = 'col-4 square'></div>");
+                    s.attr('id', i);
+                    if(model.map[i].flipped == true && model.map[i].prize == true)
+                    {
+                        s.addClass("prize");
+                    }
+                    else if (model.map[i].flipped == true && model.map[i].prize != true)
+                    {
+                        s.addClass("flipped");
+                    }
+                    $('#map').append(s);
+                }
+            }
+            
+            //run
+            initializeModel();
+            updateView();
+            
+        });
+        </script>
+    </body>
+</html>
